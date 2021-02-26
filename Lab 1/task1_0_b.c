@@ -1,3 +1,8 @@
+/*
+0. (b)Write a C program where open system call creates a new file (say, destination.txt) and then opens it. 
+(Hint: use the bitwise OR flag)
+*/
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
