@@ -1,3 +1,9 @@
+/*
+2. The cp command copies the source file specified by the SourceFile parameter to the destination file specified by the DestinationFile parameter.
+Write a C program that mimics the cp command using open() system call to open source.txt file in read-only mode
+Copy the contents of it to destination.txt using read() and write() system calls.
+*/
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
