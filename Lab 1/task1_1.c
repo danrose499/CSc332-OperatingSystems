@@ -1,3 +1,10 @@
+/*
+1. UNIX cat command has three functions with regard to text files: displaying them, combining copies of them and creating new ones.
+Write a C program to implement a command called printcontent that takes a (text) file name as argument and displays its contents. 
+Report an appropriate message if the file does not exist or can’t be opened (i.e. the file doesn’t have read permission). 
+You are to use open(), read(), write() and close() system calls.
+*/
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
