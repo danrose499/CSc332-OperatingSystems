@@ -1,3 +1,12 @@
+/*
+3. Repeat part 2 (by writing a new C program) as per the following procedure:
+(a) Read the next 50 characters from source.txt, and among characters read, replace each char- acter ’5’ with character ‘A’’ 
+All characters are then written in destination.txt
+(b) Write characters "XYZ" into file destination.txt
+(c) Repeat the previous steps until the end of file source.txt. The last read step may not have 50
+characters.
+*/
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
