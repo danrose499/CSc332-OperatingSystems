@@ -1,3 +1,10 @@
+/*
+1. Write a program processes.c, and let the parent process produce two child processes.
+One prints out "I am first child, my pid is: " PID, and the other prints out "I am second child, my pid is: " PID.
+Guarantee that the parent terminates after the children terminate (Note, you need to wait for two child processes here). 
+Use the getpid() function to retrieve the PID.
+*/
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
