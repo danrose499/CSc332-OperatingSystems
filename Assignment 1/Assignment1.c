@@ -1,3 +1,9 @@
+/*
+Task: Use fork() and one form of exec() functions so that the first child will perform 'ls -F' and pass the output to the second child using a one direction pipe
+so that the second child can perform 'nl' on the list of current directory contents. 
+Later the second child process will print the result to the screen. The parent process must wait for both of its children.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
