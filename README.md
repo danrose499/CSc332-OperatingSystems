@@ -1,4 +1,4 @@
-# CSc332-OperatingSystems
+# CSc 332: Operating Systems
 This is my repository for Labs and Assignments from CSc 332 - Operating Systems from Spring '21 semester.
 Each lab/assigment program has the task that the program solves as a code block at the top of the C file.
 
