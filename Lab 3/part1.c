@@ -6,13 +6,12 @@ Announce the successful forking of child process by displaying its PID.
 
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 
 int main() {	
 	int pid = fork();
 	if(pid == 0) { // Child case
-		printf("Child PID: %d\n", getpid());   
+		printf("Child PID: %d\n", getpid());  
         execl("/bin/date", "date", NULL);
 	}
 	else { // Parent case
