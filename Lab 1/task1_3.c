@@ -15,7 +15,7 @@ characters.
 
 int main (int argc, char* argv[]) {
 
-    // Open source and destinatino files
+    // Open source and destination files
     int source = open(argv[1], O_RDONLY);
     int dest = open(argv[2], O_WRONLY | O_CREAT);
 
