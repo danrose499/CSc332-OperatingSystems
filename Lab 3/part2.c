@@ -9,8 +9,8 @@ Use execvp(...). Announce the successful forking of child process by displaying 
 #include <sys/wait.h>
 
 int main() {	
-	int pid_1 = fork();
-	if(pid_1 == 0) { // Child case
+	int pid = fork();
+	if(pid == 0) { // Child case
 		printf("Child PID: %d\n", getpid()); 
         	char *argv[] = {"ls", "-laxo", NULL};
 		execvp(argv[0],argv);  
