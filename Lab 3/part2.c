@@ -12,12 +12,12 @@ int main() {
 	int pid_1 = fork();
 	if(pid_1 == 0) { // Child case
 		printf("Child PID: %d\n", getpid()); 
-        char *argv[] = {"ls", "-laxo", NULL};
+        	char *argv[] = {"ls", "-laxo", NULL};
 		execvp(argv[0],argv);  
 	}
 
 	else { // Parent case
-        wait(NULL);
+        	wait(NULL);
 		printf("Parent PID: %d\n", getpid());   	
 	}
 	return 0;
