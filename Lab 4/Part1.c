@@ -1,3 +1,10 @@
+/*
+Task: Write a special simple command interpreter that takes command and its arguments.
+This interpreter is a program where the main process creates a child process to execute the command using exec() family functions.
+After executing the command, it asks for a new command input (i.e., parent wait for child).
+The interpreter program will get terminated when the user enters quit.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
