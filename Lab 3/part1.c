@@ -12,7 +12,7 @@ Announce the successful forking of child process by displaying its PID.
 int main() {	
 	int pid = fork();
 	if(pid == 0) { // Child case
-		printf("Child PID: %d\n", getpid());    // Parent prints out this line
+		printf("Child PID: %d\n", getpid());   
         execl("/bin/date", "date", NULL);
 	}
 	else { // Parent case
