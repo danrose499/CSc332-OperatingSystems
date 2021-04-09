@@ -1,0 +1,4 @@
+Chapter: 1, Homework: 1, Average = 118 / 10 = 11.8
+Chapter: 1, Homework: 2, Average = 124 / 10 = 12.4
+Chapter: 2, Homework: 1, Average = 141 / 10 = 14.1
+Chapter: 2, Homework: 2, Average = 132 / 10 = 13.2
