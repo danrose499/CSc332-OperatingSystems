@@ -1,14 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdbool.h>
 #include "sem.h"
+///
+#include <string.h>
+///
 
 #define CHILD      			0  			/* Return value of child proc from fork call */
 #define TRUE       			0  
 #define FALSE      			1
 
 FILE *fp1, *fp2, *fp3, *fp4;			/* File Pointers */
+
+////
+FILE *fDad, *fC1, *fC2;
+int countDad = 0, countC1 = 0, countC2 = 0;  // Keeps track of T(P) for each process
+int dadWait = 0, son1Wait = 0, son2Wait = 0; // Keeps track of when each process is waiting to enter CS
+void UpdateTP(char* Process);                // Updates the T(P) of the process passed to the function
+void SetWait (char* Process, int status);    // Sets the wait status of the passed process to the passed status int
+////
 
 main()
 {
@@ -21,11 +31,8 @@ main()
 	int flag, flag1;				// End of loop variables
 
 	/////
-	bool dadWait = false, son1Wait = false, son2Wait = false; // Keeps track of when each process is waiting to enter CS
 	int sem1 = semget(IPC_PRIVATE, 1, 0666|IPC_CREAT);
-	//int sem2 = semget(IPC_PRIVATE, 1, 0666|IPC_CREAT);
 	sem_create(sem1,1);
-	//sem_create(sem2, 20);
 	/////
 	
 	//Initialize the file balance to be $100
@@ -40,22 +47,17 @@ main()
 	fprintf(fp4, "%d\n", N_Att);
 	fclose(fp4);
 
-	//////////
-	FILE *fDad, *fC1, *fC2; 
-	int countDad, countC1, countC2;
+	////////// 
 	fDad = fopen("dad", "w");
-	countDad = 0;
-	fprintf(fDad, "%d\n", countDad);
+	fprintf(fDad, "%d %d", countDad, dadWait);
 	fclose(fDad);
 	
 	fC1 = fopen("son1", "w");
-	countC1 = 0;
-	fprintf(fC1, "%d\n", countC1);
+	fprintf(fC1, "%d %d", countC1, son1Wait);
 	fclose(fC1);
 
 	fC2 = fopen("son2", "w");
-	countC2 = 0;
-	fprintf(fC2, "%d\n", countC2);
+	fprintf(fC2, "%d %d", countC2, son2Wait);
 	fclose(fC2);
 	//////////
 
@@ -75,26 +77,29 @@ main()
 		for(i=1;i<=N; i++)
 		{
 			/////
-			dadWait = true; // Sets dadWait bool so other processes know Dad is waiting to enter CS
+			//dadWait = 1; // Sets dadWait 'bool' so other processes know Dad is waiting to enter CS
+			SetWait("Dad", 1);
 			P(sem1); 
-			if(son1Wait == true){ // If son 1 is waiting, increment its counter
-				fC1 = fopen("son1", "r+"); 
-				fscanf(fC1, "%d", &countC1);
-				fseek(fC1, 0L, 0);
-				countC1++;	      	
-				fprintf(fC1, "%d\n", countC1);
-				fclose(fC1);
-			}
-			if(son2Wait == true){ // If son 2 is waiting, increment its counter
-				fC2 = fopen("son2", "r+"); 
-				fscanf(fC2, "%d", &countC2);
-				fseek(fC2, 0L, 0);
-				countC2++;
-				fprintf(fC2, "%d\n", countC2);
-				fclose(fC2);
-			}
 
-			//P(sem2); 
+			// fC1 = fopen("son1", "r+");
+			// fscanf(fC1, "%d %d", &countC1, &son1Wait);
+			// fseek(fC1, 0L, 0);
+			// if(son1Wait == 1){ // If son1 is waiting...
+			// 	countC1++;     // ... increment its counter
+			// }
+			// fprintf(fC1, "%d %d", countC1, son1Wait); // Update T(P) for son1
+			// fclose(fC1);
+			UpdateTP("C1");
+			UpdateTP("C2");
+
+			// fC2 = fopen("son2", "r+"); 
+			// fscanf(fC2, "%d %d", &countC2, &son2Wait);
+			// fseek(fC2, 0L, 0);
+			// if(son2Wait == 1){
+			// 	countC2++;
+			// }
+			// fprintf(fC2, "%d\n", countC2);
+			// fclose(fC2);
 			/////
 			
 			printf("Dear old dad is trying to do update.\n");
@@ -113,7 +118,8 @@ main()
 			printf("Dear old dad is done doing update. \n");
 
 			/////
-			dadWait = false; // Dad finished process and is no longer waiting
+			//dadWait = 0; // Dad finished process and is no longer waiting
+			SetWait("Dad", 0);
 			V(sem1);
 			//V(sem2);
 			/////
@@ -139,26 +145,30 @@ main()
 			while(flag == FALSE) 
 			{
 				///
-				son1Wait = true;
+				//son1Wait = 1;
+				SetWait("C1", 1);
 				P(sem1);
-				if(dadWait == true){
-					fDad = fopen("dad", "r+");
-					fscanf(fDad, "%d", &countDad);
-					fseek(fDad, 0L , 0);
-					countDad++;
-					fprintf(fDad, "%d\n", countDad);
-					fclose(fDad);
-				}
-				if(son2Wait == true){
-					fC2 = fopen("son2", "r+");
-					fscanf(fC2, "%d", &countC2);
-					fseek(fC2, 0L, 0);
-					countC2++;
-					fprintf(fC2, "%d\n", countC2);
-					fclose(fC2);
-				}
 
-				//P(sem2);
+				// fDad = fopen("dad", "r+");
+				// fscanf(fDad, "%d %d", &countDad, &dadWait);
+				// fseek(fDad, 0L , 0);
+				// if(dadWait == 1){
+				// 	countDad++;
+				// }
+				// fprintf(fDad, "%d %d", countDad, dadWait);
+				// fclose(fDad);
+				UpdateTP("Dad");
+				UpdateTP("C2");
+
+
+				// fC2 = fopen("son2", "r+");
+				// fscanf(fC2, "%d %d", &countC2, &son2Wait);
+				// fseek(fC2, 0L, 0);
+				// if(son2Wait == 1){
+				// 	countC2++;
+				// }
+				// fprintf(fC2, "%d %d", countC2, son2Wait);
+				// fclose(fC2);
 				///
 
 				fp3 = fopen("attempt" , "r+");
@@ -195,7 +205,8 @@ main()
 					}
 				}
 				////
-				son1Wait = false;
+				//son1Wait = 0;
+				SetWait("C1", 0);
 				V(sem1);
 				//V(sem2);
 				////
@@ -218,28 +229,31 @@ main()
 				while(flag1 == FALSE) 
 				{
 					/////
-					son2Wait = true;
+					//son2Wait = 1;
+					SetWait("C2", 1);
 					P(sem1);
-					
-					if(dadWait == true){
-						fDad = fopen("dad", "r+");
-						fscanf(fDad, "%d", &countDad);
-						fseek(fDad, 0L, 0);
-						countDad++;
-						fprintf(fDad, "%d\n", countDad);
-						fclose(fDad);
-					}
-					if(son1Wait == true){
-						fC1 = fopen("son1", "r+");
-						fscanf(fC1, "%d", &countC1);
-						fseek(fC1, 0L, 0);
-						countC1++;
-						fprintf(fC1, "%d\n", countC1);
-						fclose(fC1);
-					}
 
-					//P(sem2);
+					// fDad = fopen("dad", "r+");
+					// fscanf(fDad, "%d %d", &countDad, &dadWait);
+					// fseek(fDad, 0L, 0);
+					// if(dadWait == 1){
+					// 	countDad++;
+					// }
+					// fprintf(fDad, "%d %d", countDad, dadWait);
+					// fclose(fDad);
+					UpdateTP("Dad");
+					UpdateTP("C1");
+					
+					// fC1 = fopen("son1", "r+");
+					// fscanf(fC1, "%d %d", &countC1, &son1Wait);
+					// fseek(fC1, 0L, 0);
+					// if(son1Wait == 1){
+					// 	countC1++;
+					// }
+					// fprintf(fC1, "%d %d", countC1, son1Wait);
+					// fclose(fC1);
 					/////
+
 					fp3 = fopen("attempt" , "r+");
 					fscanf(fp3, "%d", &N_Att);
 					if(N_Att == 0)
@@ -274,7 +288,8 @@ main()
 							fclose(fp3);
 						}
 					}
-					son2Wait = false;
+					//son2Wait = 0;
+					SetWait("C2", 0);
 					V(sem1);
 					//V(sem2);
 				}
@@ -296,4 +311,60 @@ main()
 		exit(0);
 	}
 	exit(0);
+}
+
+void UpdateTP(char* Process){
+	if (strcmp(Process, "Dad") == 0){
+		fDad = fopen("dad", "r+");
+		fscanf(fDad, "%d %d", &countDad, &dadWait);
+		fseek(fDad, 0L, 0);
+		if(dadWait == 1){
+			countDad++;
+		}
+		fprintf(fDad, "%d %d", countDad, dadWait);
+		fclose(fDad);
+	}
+	else if(strcmp(Process, "C1") == 0){
+		fC1 = fopen("son1", "r+");
+		fscanf(fC1, "%d %d", &countC1, &son1Wait);
+		fseek(fC1, 0L, 0);
+		if(son1Wait == 1){
+			countC1++;
+		}
+		fprintf(fC1, "%d %d", countC1, son1Wait);
+		fclose(fC1);
+	}
+	else if (strcmp(Process, "C2") == 0){
+		fC2 = fopen("son2", "r+"); 
+		fscanf(fC2, "%d %d", &countC2, &son2Wait);
+		fseek(fC2, 0L, 0);
+		if(son2Wait == 1){
+			countC2++;
+		}
+		fprintf(fC2, "%d\n", countC2);
+		fclose(fC2);
+	}
+}
+void SetWait(char* Process, int status){
+	if (strcmp(Process, "Dad") == 0){
+		fDad = fopen("dad", "r+");
+		fscanf(fDad, "%d %d", &countDad, &dadWait);
+		fseek(fDad, 0L, 0);
+		fprintf(fDad, "%d %d", countDad, status);
+		fclose(fDad);
+	}
+	else if(strcmp(Process, "C1") == 0){
+		fC1 = fopen("son1", "r+");
+		fscanf(fC1, "%d %d", &countC1, &son1Wait);
+		fseek(fC1, 0L, 0);
+		fprintf(fC1, "%d %d", countC1, status);
+		fclose(fC1);
+	}
+	else if (strcmp(Process, "C2") == 0){
+		fC2 = fopen("son2", "r+"); 
+		fscanf(fC2, "%d %d", &countC2, &son2Wait);
+		fseek(fC2, 0L, 0);
+		fprintf(fC2, "%d\n", status);
+		fclose(fC2);
+	}
 }
