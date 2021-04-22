@@ -279,7 +279,7 @@ void UpdateTP(char* Process){                       // Updates the T(P) of the p
 		if(son2Wait == 1){
 			countC2++;
 		}
-		fprintf(fC2, "%d\n", countC2);
+		fprintf(fC2, "%d %d", countC2, son2Wait);
 		fclose(fC2);
 	}
 }
@@ -302,7 +302,7 @@ void SetWait(char* Process, int status){            // Sets the wait status of t
 		fC2 = fopen("son2", "r+"); 
 		fscanf(fC2, "%d %d", &countC2, &son2Wait);
 		fseek(fC2, 0L, 0);
-		fprintf(fC2, "%d\n", status);
+		fprintf(fC2, "%d %d", countC2, status);
 		fclose(fC2);
 	}
 }
