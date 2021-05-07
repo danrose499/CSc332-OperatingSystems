@@ -79,7 +79,7 @@ void *tobaccoAction() {
         pthread_mutex_lock(&lock); // Wait for CS to be available
         paper--;
         match--;
-        printf("Tobacco Somker took them to smoke.\n");
+        printf("Tobacco Smoker took them to smoke.\n");
         pthread_mutex_unlock(&agent_lock); // Wake Agent up
         pthread_mutex_unlock(&lock); // Release CS
     }
